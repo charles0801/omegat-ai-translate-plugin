@@ -1,0 +1,43 @@
+plugins {
+    id 'java'
+}
+
+group = 'io.github.omegat'
+version = '0.1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'org.omegat:omegat:6.0.0'
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 11
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    archiveBaseName = 'omegat-ai-translate-plugin'
+    manifest {
+        attributes(
+            'Manifest-Version': '1.0',
+            'OmegaT-Plugin': 'true',
+            'OmegaT-Plugins': 'io.github.omegat.ai.AiTranslatePlugin',
+            'Plugin-Name': 'AI Translate',
+            'Plugin-Version': project.version,
+            'Plugin-Author': 'OmegaT AI Translate contributors',
+            'Plugin-Category': 'machinetranslator',
+            'Plugin-Description': 'Translate segments with OpenAI-compatible AI providers',
+            'License': 'GNU General Public License version 3 or later'
+        )
+    }
+}
