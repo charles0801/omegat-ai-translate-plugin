@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'io.github.omegat'
-version = '0.4.0-SNAPSHOT'
+version = providers.gradleProperty('releaseVersion').orElse('0.4.0-SNAPSHOT').get()
 
 repositories {
     mavenCentral()

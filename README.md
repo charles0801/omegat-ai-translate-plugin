@@ -39,6 +39,26 @@ configuration folder, remove any older copies of this plugin, and restart
 OmegaT. The distributable JAR does not bundle OmegaT or require additional
 plugin-specific runtime libraries.
 
+Once a version has been published, its JAR can also be downloaded from
+[GitHub Releases](https://github.com/charles0801/omegat-ai-translate-plugin/releases).
+
+### Publish a release
+
+The [release workflow](.github/workflows/release.yml) runs only when a version
+tag such as `v0.4.0` is pushed. It tests the tagged source, builds a JAR named
+for the tag with the matching manifest version, and uploads it to a GitHub
+Release. Ordinary commits do not publish a release. After the intended commit
+has been pushed, create and push a tag:
+
+```sh
+git tag -a v0.4.0 -m "v0.4.0"
+git push origin v0.4.0
+```
+
+Use a new `vX.Y.Z` tag for each release; do not move a published tag. The CI
+build runs Gradle on JDK 21 but compiles the plugin for Java 11. It uses the
+repository's `GITHUB_TOKEN`; no personal access token is needed.
+
 ## Set up a provider
 
 1. Open an OmegaT project.

@@ -30,6 +30,24 @@ gradle clean test jar
 删除此插件的旧版 JAR，然后重启 OmegaT。发布用 JAR 不包含 OmegaT，也不需要
 额外安装本插件专用的运行库。
 
+发布版本的 JAR 也可以从 [GitHub Releases](https://github.com/charles0801/omegat-ai-translate-plugin/releases)
+下载。
+
+### 发布版本
+
+[发布工作流](.github/workflows/release.yml) 只在推送 `v0.4.0` 这类版本标签时
+运行：测试该标签对应的源码，构建文件名和清单版本一致的 JAR，并上传到 GitHub
+Release。普通代码提交不会触发发布。确认目标提交已推送后执行：
+
+```sh
+git tag -a v0.4.0 -m "v0.4.0"
+git push origin v0.4.0
+```
+
+每次发布使用新的 `vX.Y.Z` 标签，不要移动已发布的标签。CI 使用 JDK 21 运行
+Gradle，但插件仍编译为 Java 11 字节码。工作流使用仓库自带的 `GITHUB_TOKEN`，
+不需要个人访问令牌。
+
 ## 配置服务商
 
 1. 打开 OmegaT 项目。
