@@ -17,7 +17,8 @@ final class OpenAiClient {
     private final HttpClient client;
 
     OpenAiClient() {
-        client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL).build();
+        // Never forward a provider key or source segment to a redirect target.
+        client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NEVER).build();
     }
 
     String translate(ProviderConfig provider, String apiKey, String sourceLanguage,
