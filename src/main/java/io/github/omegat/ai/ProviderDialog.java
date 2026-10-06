@@ -150,7 +150,7 @@ final class ProviderDialog extends JDialog {
         c.gridy = 3; c.fill = GridBagConstraints.BOTH; c.weighty = 0.45; c.insets = new Insets(0, 0, 0, 0);
         panel.add(new JScrollPane(userPrompt), c);
         c.gridy = 4; c.fill = GridBagConstraints.HORIZONTAL; c.weighty = 0;
-        panel.add(new JLabel("Variables: {{sourceLanguage}}, {{targetLanguage}}, {{text}} (required)"), c);
+        panel.add(new JLabel("Variables: {{sourceLanguage}}, {{targetLanguage}}, {{text}} (required), {{glossary}}"), c);
         return panel;
     }
 
@@ -236,4 +236,3 @@ final class ProviderDialog extends JDialog {
         }
     }
 }
-

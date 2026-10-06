@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'io.github.omegat'
-version = '0.1.0-SNAPSHOT'
+version = '0.4.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     compileOnly 'org.omegat:omegat:6.0.0'
+    testImplementation('org.omegat:omegat:6.0.0') { transitive = false }
     testImplementation platform('org.junit:junit-bom:5.11.4')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

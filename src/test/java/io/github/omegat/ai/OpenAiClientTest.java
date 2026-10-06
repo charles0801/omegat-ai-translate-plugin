@@ -1,6 +1,13 @@
 package io.github.omegat.ai;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.sun.net.httpserver.HttpServer;
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 
 class OpenAiClientTest {
@@ -10,5 +17,42 @@ class OpenAiClientTest {
                 OpenAiClient.expand("{{sourceLanguage}} > {{targetLanguage}}: {{text}}",
                         "English", "Chinese", "price $5\\unit"));
     }
-}
 
+    @Test
+    void leavesPlaceholderTextInsideTheSegmentUntouched() {
+        assertEquals("Literal {{glossary}}; terms: source → 译法",
+                OpenAiClient.expand("{{text}}; terms: {{glossary}}", "English", "Chinese",
+                        "Literal {{glossary}}", "source → 译法"));
+    }
+
+    @Test
+    void sendsMatchedTermsWithExistingCustomPrompt() throws Exception {
+        AtomicReference<String> requestBody = new AtomicReference<>();
+        HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext("/v1/chat/completions", exchange -> {
+            requestBody.set(new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8));
+            byte[] response = "{\"choices\":[{\"message\":{\"content\":\"运行时\"}}]}"
+                    .getBytes(StandardCharsets.UTF_8);
+            exchange.sendResponseHeaders(200, response.length);
+            try (java.io.OutputStream output = exchange.getResponseBody()) {
+                output.write(response);
+            }
+        });
+        server.start();
+        try {
+            ProviderConfig provider = new ProviderConfig();
+            provider.setBaseUrl("http://127.0.0.1:" + server.getAddress().getPort() + "/v1");
+            provider.setUserPrompt("Translate: {{text}}");
+            String result = new OpenAiClient().translate(provider, "", "English", "Chinese",
+                    "runtime", Map.of("runtime", "运行时"));
+            assertEquals("运行时", result);
+            assertTrue(requestBody.get().contains("Translate: runtime"));
+            assertTrue(requestBody.get().contains("runtime → 运行时"));
+
+            new OpenAiClient().translate(provider, "", "English", "Chinese", "ordinary text", Map.of());
+            assertFalse(requestBody.get().contains("Terminology matched"));
+        } finally {
+            server.stop(0);
+        }
+    }
+}
