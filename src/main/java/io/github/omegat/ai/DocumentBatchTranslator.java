@@ -212,7 +212,9 @@ final class DocumentBatchTranslator {
                         cancelButton.setEnabled(false);
                     });
                     Core.executeExclusively(true, () -> project.saveProject(false));
-                    SwingUtilities.invokeAndWait(() -> Core.getEditor().refreshView(true));
+                    // The active editor still contains its pre-batch text. Discard that view
+                    // before reloading, or refreshView(true) can commit it over the new TMX entry.
+                    SwingUtilities.invokeAndWait(() -> Core.getEditor().refreshView(false));
                 } catch (Exception saveFailure) {
                     error = "Translations were added, but saving failed. Save the project manually.";
                 }

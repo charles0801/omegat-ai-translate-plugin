@@ -99,7 +99,8 @@ only refreshes the suggestion; it does not insert or replace target text.
 at a time for untranslated segments in the open file. It uses glossary matches
 for each segment. Empty responses and responses that alter OmegaT tags are
 skipped. Canceling keeps completed translations, which are saved when the batch
-stops. Identical source text in other project files is not changed by this
+stops. The open document is then reloaded so the new translations appear in the
+editor. Identical source text in other project files is not changed by this
 command. Review the results before delivery.
 
 ## Prompts and glossary
